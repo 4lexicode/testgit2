@@ -2,6 +2,19 @@
 
 from __future__ import annotations
 
+import os
+import sys
+
+RESET = "\033[0m"
+BOLD = "\033[1m"
+DIM = "\033[2m"
+CYAN = "\033[96m"
+MAGENTA = "\033[95m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+RED = "\033[91m"
+GRID = "\033[90m"
+
 LINES = (
     (0, 1, 2),
     (3, 4, 5),
@@ -25,26 +38,66 @@ def full(board: list[str]) -> bool:
     return all(board)
 
 
+def color_enabled() -> bool:
+    return sys.stdout.isatty() and os.environ.get("NO_COLOR") is None
+
+
+def paint(text: str, *codes: str) -> str:
+    if not color_enabled():
+        return text
+    return f"{''.join(codes)}{text}{RESET}"
+
+
+def enable_windows_color() -> None:
+    if os.name != "nt" or not color_enabled():
+        return
+    import ctypes
+
+    kernel = ctypes.windll.kernel32
+    handle = kernel.GetStdHandle(-11)
+    mode = ctypes.c_uint()
+    if kernel.GetConsoleMode(handle, ctypes.byref(mode)):
+        kernel.SetConsoleMode(handle, mode.value | 0x0004)
+
+
+def cell_text(mark: str, number: int) -> str:
+    if mark == "X":
+        return paint("X", BOLD, CYAN)
+    if mark == "O":
+        return paint("O", BOLD, MAGENTA)
+    return paint(str(number), DIM)
+
+
+def mark_label(mark: str) -> str:
+    return cell_text(mark, 0) if mark in {"X", "O"} else mark
+
+
 def render(board: list[str]) -> None:
-    cells = [mark or str(i + 1) for i, mark in enumerate(board)]
+    cells = [cell_text(mark, i + 1) for i, mark in enumerate(board)]
+    bar = paint("---+---+---", GRID)
+    pipe = paint("|", GRID)
     print()
     for row in range(3):
         a, b, c = cells[row * 3 : row * 3 + 3]
-        print(f" {a} | {b} | {c} ")
+        print(f" {a} {pipe} {b} {pipe} {c} ")
         if row < 2:
-            print("---+---+---")
+            print(bar)
     print()
+
+
+def say(text: str, *codes: str) -> None:
+    print(paint(text, *codes))
 
 
 def ask_move(board: list[str], mark: str) -> int:
     while True:
-        raw = input(f"Player {mark}, pick a square (1-9): ").strip()
+        raw = input(f"Player {mark_label(mark)}, pick a square (1-9): ").strip()
         if not raw.isdigit() or not 1 <= int(raw) <= 9:
-            print("Enter a number from 1 to 9.")
+            say("Enter a number from 1 to 9.", RED)
             continue
         index = int(raw) - 1
         if board[index]:
-            print("That square is taken.")
+            say("That square is taken.", YELLOW)
             continue
         return index
 
@@ -96,15 +149,15 @@ def play(vs_computer: bool) -> None:
     computer = "O"
     turn = "X"
 
-    print("Squares are numbered 1-9, left to right, top to bottom.")
+    say("Squares are numbered 1-9, left to right, top to bottom.", DIM)
     if vs_computer:
-        print("You are X. The computer is O.")
+        print(f"You are {mark_label(human)}. The computer is {mark_label(computer)}.")
 
     while True:
         render(board)
         if vs_computer and turn == computer:
             index = best_move(board, computer)
-            print(f"Computer plays {index + 1}.")
+            say(f"Computer plays {index + 1}.", MAGENTA)
         else:
             index = ask_move(board, turn)
         board[index] = turn
@@ -113,28 +166,29 @@ def play(vs_computer: bool) -> None:
         if who:
             render(board)
             if vs_computer and who == computer:
-                print("Computer wins.")
+                say("Computer wins.", YELLOW, BOLD)
             elif vs_computer and who == human:
-                print("You win.")
+                say("You win.", GREEN, BOLD)
             else:
-                print(f"Player {who} wins.")
+                print(f"Player {mark_label(who)} wins.")
             return
         if full(board):
             render(board)
-            print("Draw.")
+            say("Draw.", YELLOW, BOLD)
             return
         turn = "O" if turn == "X" else "X"
 
 
 def main() -> None:
-    print("Tic-tac-toe")
+    enable_windows_color()
+    say("Tic-tac-toe", BOLD, CYAN)
     while True:
         choice = input("Play against the computer? [Y/n] ").strip().lower()
         vs_computer = choice not in {"n", "no"}
         play(vs_computer)
         again = input("Play again? [Y/n] ").strip().lower()
         if again in {"n", "no"}:
-            print("Thanks for playing.")
+            say("Thanks for playing.", DIM)
             return
 
 

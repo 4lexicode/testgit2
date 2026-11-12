@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" role="img" aria-label="Tic-tac-toe board with X in cyan and O in magenta">
+  <rect width="720" height="360" rx="28" fill="#12141c"/>
+  <text x="48" y="64" fill="#f4f6fb" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="32" font-weight="700">Tic-tac-toe</text>
+  <text x="48" y="98" fill="#9aa3b5" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16">Two players, or you against an unbeatable computer</text>
+  <g transform="translate(430,48)">
+    <rect width="242" height="264" rx="18" fill="#1c2030"/>
+    <path d="M90 24 V240 M152 24 V240 M28 96 H214 M28 168 H214" stroke="#3a4258" stroke-width="6" stroke-linecap="round"/>
+    <g font-family="Segoe UI, Helvetica, Arial, sans-serif" text-anchor="middle" dominant-baseline="central">
+      <text x="59" y="60" fill="#5ee1ff" font-size="42" font-weight="700">X</text>
+      <text x="121" y="60" fill="#6b7288" font-size="28">2</text>
+      <text x="183" y="60" fill="#ff7ad9" font-size="42" font-weight="700">O</text>
+      <text x="59" y="132" fill="#6b7288" font-size="28">4</text>
+      <text x="121" y="132" fill="#5ee1ff" font-size="42" font-weight="700">X</text>
+      <text x="183" y="132" fill="#6b7288" font-size="28">6</text>
+      <text x="59" y="204" fill="#ff7ad9" font-size="42" font-weight="700">O</text>
+      <text x="121" y="204" fill="#6b7288" font-size="28">8</text>
+      <text x="183" y="204" fill="#6b7288" font-size="28">9</text>
+    </g>
+  </g>
+  <g transform="translate(48,150)" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16">
+    <circle cx="10" cy="8" r="8" fill="#5ee1ff"/>
+    <text x="28" y="14" fill="#d5dbe8">X goes first</text>
+    <circle cx="10" cy="44" r="8" fill="#ff7ad9"/>
+    <text x="28" y="50" fill="#d5dbe8">O answers</text>
+    <circle cx="10" cy="80" r="8" fill="#6b7288"/>
+    <text x="28" y="86" fill="#d5dbe8">Open squares stay numbered</text>
+    <text x="0" y="132" fill="#7d879c" font-size="14">Three in a row wins. A full board is a draw.</text>
+  </g>
+</svg>
